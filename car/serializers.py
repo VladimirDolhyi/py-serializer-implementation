@@ -11,7 +11,7 @@ class CarSerializer(serializers.Serializer):
         required=True,
         validators=[MaxValueValidator(1914), MinValueValidator(1)]
     )
-    is_broken = serializers.BooleanField(default=False)
+    is_broken = serializers.BooleanField(required=True)
     problem_description = serializers.CharField(
         required=False, allow_null=True
     )

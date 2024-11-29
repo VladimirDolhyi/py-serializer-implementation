@@ -1,4 +1,7 @@
-import json
+import io
+
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
 
 from car.models import Car
 from car.serializers import CarSerializer
@@ -6,18 +9,15 @@ from car.serializers import CarSerializer
 
 def serialize_car_object(car: Car) -> bytes:
     serializer = CarSerializer(car)
-    # return JSONRenderer().render(serializer.data)
-    return json.dumps(serializer.data).encode("utf-8")
+    return JSONRenderer().render(serializer.data)
 
 
 def deserialize_car_object(json_data: bytes) -> Car:
-    # stream = io.BytesIO(json)
-    # data = JSONParser().parse(stream)
-    data = json.loads(json_data.decode("utf-8"))
+    stream = io.BytesIO(json_data)
+    data = JSONParser().parse(stream)
     serializer = CarSerializer(data=data)
     if serializer.is_valid():
-        return Car(**serializer.validated_data)
+        return serializer.save()
     else:
         raise ValueError(
-            "Invalid data for Car instance: {}".format(serializer.errors)
-        )
+            "Invalid data for Car instance: {serializer.errors}")

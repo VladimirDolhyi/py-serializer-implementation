@@ -17,11 +17,9 @@ def deserialize_car_object(json_data: bytes) -> Car:
     data = JSONParser().parse(stream)
     # return Car(**data)
     serializer = CarSerializer(data=data)
-    if serializer.is_valid(raise_exception=True):
+    if serializer.is_valid():
         return serializer.save()
-    else:
-        raise ValueError(
-            "Invalid data for Car instance: {serializer.errors}")
+    raise ValueError("Invalid data for Car instance: {serializer.errors}")
     # if serializer.is_valid(raise_exception=True):
     #     return Car.objects.create(**serializer.data)
     # return serializer.errors
